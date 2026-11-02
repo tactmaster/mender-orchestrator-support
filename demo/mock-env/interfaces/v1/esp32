@@ -94,7 +94,7 @@ case "$STATE" in
             if [ -c "${DEVICE_PATH}" ] || [ -e "${DEVICE_PATH}" ]; then
                 MAC_ID=$(esptool.py  --chip "${ESPTOOL_CHIP}" --port "${DEVICE_PATH}" \
                     --baud "${ESPTOOL_BAUD}" chip_id 2>/dev/null \
-                    | grep "^MAC:" | head -1 | awk '{print $2}' | tr -d ':') || true
+                    | grep "^MAC:" | head -n 1 | awk '{print $2}' | tr -d ':') || true
             fi
             if [ -n "${MAC_ID}" ]; then
                 echo "${MAC_ID}" > "${CACHED_MAC}"
@@ -154,7 +154,7 @@ case "$STATE" in
         fi
 
         # Find the firmware binary in the unpacked artifact data directory
-        FW_BIN=$(find "${DATA_DIR}" -name '*.bin' -type f | head -1)
+        FW_BIN=$(find "${DATA_DIR}" -name '*.bin' -type f | head -n 1)
         if [ -z "${FW_BIN}" ]; then
             log "ERROR: No .bin firmware file found in artifact payload"
             exit 1
